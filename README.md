@@ -20,3 +20,6 @@ PhpMyAdmin : http://127.0.0.1:8085
 
 Pour éxec les commandes symfony:
 docker exec -it php bash
+
+Pour génerer le jeu de clé jwt:
+docker compose exec php3 php bin/console lexik:jwt:generate-keypair
