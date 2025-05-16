@@ -3,24 +3,35 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\CustomerRepository;
-use App\State\PasswordStateProcessor;
+use App\State\RegisterStateProcessor;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 #Lors de la MAJ d'un customer ou de la création on hash le MDP
-#[Post(processor: PasswordStateProcessor::class)]
-#[Put(processor: PasswordStateProcessor::class)]
-#[Patch(processor: PasswordStateProcessor::class)]
+#[Post(processor: RegisterStateProcessor::class)]
+#[Put(processor: RegisterStateProcessor::class)]
+#[Patch(processor: RegisterStateProcessor::class)]
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
+#[Get(security: "is_granted('ROLE_ADMIN') or object.getId() == user.getId()")]
+#[Put(security: "is_granted('ROLE_ADMIN') or object.getId() == user.getId()")]
+#[Patch(security: "is_granted('ROLE_ADMIN') or object.getId() == user.getId()")]
+#[GetCollection(security: "is_granted('ROLE_ADMIN')")]
+#[Post]
+#[Delete(security: "is_granted('ROLE_ADMIN') or object.getId() == user.getId()")]
 #[ApiResource(
     normalizationContext: ['groups' => ['customer:read']],
     denormalizationContext: ['groups' => ['customer:write']],
@@ -59,10 +70,18 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $companyName = null;
 
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $roles = null;
+    
     #[Ignore]
     #[ORM\Column(length: 255)]
     private ?string $password = null;
     
+    #[NotBlank(message: "Password should not be blank.")]
+    #[Regex(
+        pattern: "/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/",
+        message: "Le mot de passe doit contenir au moins 8 caractères, incluant une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial."
+    )]
     #[Groups(["customer:write"])]
     private ?string $plainPassword = null;
 
@@ -185,9 +204,21 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+ 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles ?? [];
+        // guarantee every user has at least ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 
     public function getUserIdentifier(): string
