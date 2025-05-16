@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -44,6 +45,7 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(["customer:read"])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[Groups(["customer:read", "customer:write"])]
@@ -85,6 +87,9 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["customer:write"])]
     private ?string $plainPassword = null;
 
+    #[ORM\Column(type: 'uuid')]
+    private ?Uuid $uuid = null;
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -112,6 +117,14 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->createdAt === null) {
             $this->createdAt = new \DateTimeImmutable();
+        }
+    }
+
+    #[ORM\PrePersist]
+    public function setUuidValue(): void
+    {
+        if ($this->uuid === null) {
+            $this->uuid = Uuid::v4();
         }
     }
 
@@ -229,6 +242,18 @@ class Customer implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
+    }
+
+    public function getUuid(): ?Uuid
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(Uuid $uuid): static
+    {
+        $this->uuid = $uuid;
+
+        return $this;
     }
 
 }
