@@ -23,6 +23,11 @@
         </testsuite>
     </testsuites>
 
+    <!-- Commenter ou supprimer la section listeners
+    <listeners>
+        <listener class="MyTestListener" file="tests/ResetDatabase.php"/>
+    </listeners>
+    -->
 
     <source ignoreSuppressionOfDeprecations="true" restrictNotices="true" restrictWarnings="true">
         <include>
