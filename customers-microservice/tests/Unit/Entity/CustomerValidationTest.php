@@ -67,6 +67,40 @@ class CustomerValidationTest extends TestCase
         $this->assertTrue($customer->getCompanyName() === '');
     }
 
+    public function testValidPassword()
+    {
+        $customer = new Customer();
+
+        // Test pour un mot de passe valide
+        $customer->setPassword('ValidPass1!');
+        $this->assertTrue($this->isPasswordValid($customer->getPassword()));
+    }
+
+    public function testInvalidPassword()
+    {
+        $customer = new Customer();
+
+        // Test pour un mot de passe trop court
+        $customer->setPassword('Short1!');
+        $this->assertFalse($this->isPasswordValid($customer->getPassword()));
+
+        // Test pour un mot de passe sans majuscule
+        $customer->setPassword('invalidpass1!');
+        $this->assertFalse($this->isPasswordValid($customer->getPassword()));
+
+        // Test pour un mot de passe sans minuscule
+        $customer->setPassword('INVALIDPASS1!');
+        $this->assertFalse($this->isPasswordValid($customer->getPassword()));
+
+        // Test pour un mot de passe sans chiffre
+        $customer->setPassword('InvalidPass!');
+        $this->assertFalse($this->isPasswordValid($customer->getPassword()));
+
+        // Test pour un mot de passe sans caractère spécial
+        $customer->setPassword('InvalidPass1');
+        $this->assertFalse($this->isPasswordValid($customer->getPassword()));
+    }
+
     // Méthode utilitaire pour vérifier les caractères valides dans les noms
     private function hasValidNameCharacters($name)
     {
@@ -77,5 +111,36 @@ class CustomerValidationTest extends TestCase
     private function hasValidLength($field, $maxLength)
     {
         return strlen($field) <= $maxLength;
+    }
+
+    // Méthode utilitaire pour vérifier la validité du mot de passe
+    private function isPasswordValid($password)
+    {
+        // Vérifier la longueur minimale
+        if (strlen($password) < 8) {
+            return false;
+        }
+
+        // Vérifier la présence d'au moins une majuscule
+        if (!preg_match('/[A-Z]/', $password)) {
+            return false;
+        }
+
+        // Vérifier la présence d'au moins une minuscule
+        if (!preg_match('/[a-z]/', $password)) {
+            return false;
+        }
+
+        // Vérifier la présence d'au moins un chiffre
+        if (!preg_match('/[0-9]/', $password)) {
+            return false;
+        }
+
+        // Vérifier la présence d'au moins un caractère spécial
+        if (!preg_match('/[^a-zA-Z0-9]/', $password)) {
+            return false;
+        }
+
+        return true;
     }
 }
