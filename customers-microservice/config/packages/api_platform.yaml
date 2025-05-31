@@ -1,5 +1,5 @@
 api_platform:
-    title: Hello API Platform
+    title: API Customers
     version: 1.0.0
     defaults:
         stateless: true
@@ -7,4 +7,10 @@ api_platform:
             vary: ['Content-Type', 'Authorization', 'Origin']
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
-        
+
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
+                

@@ -41,7 +41,7 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin3
     environment:
-      PMA_HOST: mariadb # Nom du conteneur MariaDB
+      PMA_HOST: mariadb3 # Nom du conteneur MariaDB
       PMA_PORT: 3306    # Port interne utilisé par phpMyAdmin
       MYSQL_ROOT_PASSWORD: root
     ports:
