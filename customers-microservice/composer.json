@@ -77,7 +77,7 @@
             "bin/console doctrine:database:create --env=test",
             "bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=test",
             "bin/console cache:clear --env=test",
-            "bin/phpunit"
+            "php ./vendor/bin/phpunit"
         ]
     },
     "conflict": {
