@@ -47,6 +47,10 @@ jobs:
       - name: Prepare the database
         run: sudo systemctl start mysql
 
+      - name: Fix permissions
+        run: chmod +x bin/console
+        working-directory: ./customers-microservice
+
       - name: Tests
         run: composer app:tests
         working-directory: ./customers-microservice
