@@ -25,3 +25,5 @@ Pour génerer le jeu de clé jwt:
 docker compose exec php3 php bin/console lexik:jwt:generate-keypair
 
 Accéder à la documentation: /api
+
+Lancer les tests unitaires, fonctionnels, etc: php ./vendor/bin/phpunit
