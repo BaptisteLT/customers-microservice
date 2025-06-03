@@ -8,7 +8,7 @@ Pour arrêter docker :
 docker-compose stop
 
 Pour supprimer les containers :
-docker-compose down
+docker-compose down 
 
 
 Pour supprimer les containers avec les volumes :
