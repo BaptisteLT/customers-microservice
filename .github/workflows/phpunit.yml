@@ -1,51 +1,65 @@
-name: CI - PHPUnit
+name: Tests
 
-on:
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
-  tests:
+  test:
+    name: Tests
     runs-on: ubuntu-latest
-
     services:
-      mariadb:
-        image: mariadb:latest
-        ports:
-          - 3306:3306
+      database:
+        image: mariadb:10.7.3
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: symfony
-          MYSQL_USER: symfony
-          MYSQL_PASSWORD: symfony
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          MARIADB_USER: root
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: app_test
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'no'
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
-          extensions: pdo, pdo_mysql
-          tools: composer
+          php-version: 8.3
+          tools: composer:v2
+
+      - name: Setup Cache
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+        
+      - name: Caching deps
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php8.3-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php8.3-composer-latest-
+
+      - name: Update composer
+        run: composer self-update
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+        working-directory: ./customers-microservice
 
-      - name: Prepare Symfony .env
-        run: cp .env.test .env
+      - name: Prepare the database
+        run: sudo systemctl start mysql
 
-      - name: Setup DB and run migrations
-        run: |
-          php bin/console doctrine:database:create --env=test
-          php bin/console doctrine:migrations:migrate --no-interaction --env=test
+      - name: Fix permissions
+        run: chmod +x bin/console
+        working-directory: ./customers-microservice
 
-      - name: Run PHPUnit tests
-        run: php vendor/bin/phpunit
+      - name: Run PHPUnit tests with coverage
+        run: vendor/bin/phpunit --coverage-clover clover.xml
+        working-directory: ./customers-microservice
+        env:
+          APP_ENV: test
+          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/app_test
+
+      - name: Enforce minimum code coverage
+        run: ./vendor/bin/coverage-check clover.xml 85
+        working-directory: ./customers-microservice

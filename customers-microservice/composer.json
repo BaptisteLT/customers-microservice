@@ -71,6 +71,13 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "app:tests": [
+            "bin/console doctrine:database:drop --force --if-exists --env=test",
+            "bin/console doctrine:database:create --env=test",
+            "bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=test",
+            "bin/console cache:clear --env=test",
+            "php ./vendor/bin/phpunit"
         ]
     },
     "conflict": {
@@ -83,8 +90,12 @@
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.3",
         "doctrine/doctrine-fixtures-bundle": "^4.1",
         "phpunit/phpunit": "^12.1",
+        "rregeer/phpunit-coverage-check": "^0.3.1",
+        "symfony/browser-kit": "7.2.*",
+        "symfony/css-selector": "7.2.*",
         "symfony/maker-bundle": "^1.63"
     }
 }

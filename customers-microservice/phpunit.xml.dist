@@ -23,9 +23,6 @@
         </testsuite>
     </testsuites>
 
-    <listeners>
-        <listener class="MyTestListener" file="tests/ResetDatabase.php"/>
-    </listeners>
 
     <source ignoreSuppressionOfDeprecations="true" restrictNotices="true" restrictWarnings="true">
         <include>
@@ -34,5 +31,6 @@
     </source>
 
     <extensions>
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>
 </phpunit>
