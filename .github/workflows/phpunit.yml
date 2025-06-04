@@ -88,7 +88,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: ./customers-microservice
-          organization: baptistelt
-          projectKey: BaptisteLT_customers-microservice
+          args: >
+            -Dsonar.organization=baptistelt
+            -Dsonar.projectKey=BaptisteLT_customers-microservice
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
