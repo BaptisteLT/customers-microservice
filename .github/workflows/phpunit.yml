@@ -54,42 +54,11 @@ jobs:
         working-directory: ./customers-microservice
 
       - name: Run PHPUnit tests with coverage
-        run: vendor/bin/phpunit --coverage-clover var/coverage/phpunit.coverage.xml
+        run: vendor/bin/phpunit --coverage-clover clover.xml
         working-directory: ./customers-microservice
         env:
           APP_ENV: test
           DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/app_test
 
-  sonarcloud:
-    name: SonarCloud Scan
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Java (required by SonarCloud)
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --ansi
-        working-directory: ./customers-microservice
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: ./customers-microservice
-          args: >
-            -Dsonar.organization=baptistelt
-            -Dsonar.projectKey=BaptisteLT_customers-microservice
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Enforce minimum code coverage
+        run: ./vendor/bin/coverage-check clover.xml 80
