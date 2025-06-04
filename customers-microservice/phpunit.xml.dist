@@ -23,10 +23,6 @@
         </testsuite>
     </testsuites>
 
-    <listeners>
-        <listener class="MyTestListener" file="tests/ResetDatabase.php"/>
-    </listeners>
-
     <source ignoreSuppressionOfDeprecations="true" restrictNotices="true" restrictWarnings="true">
         <include>
             <directory>src</directory>
