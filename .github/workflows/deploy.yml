@@ -20,15 +20,16 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no root@185.170.214.106 << EOF
-          if [ ! -d "/var/www/customers-microservice/.git" ]; then
-            git clone git@github.com:BaptisteLT/customers-microservice.git /var/www/customers-microservice
-          fi
-
-          cd /var/www/customers-microservice || exit
-          git pull origin main
-          chmod +x entrypoint.sh
-          docker-compose -f docker-compose.prod.yml down
-          docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
-          docker-compose -f docker-compose.prod.yml ps
-        EOF
+          ssh -o StrictHostKeyChecking=no root@185.170.214.106 << 'EOF'
+            if [ ! -d "/var/www/customers-microservice/.git" ]; then
+              git clone git@github.com:BaptisteLT/customers-microservice.git /var/www/customers-microservice
+            fi
+            cd /var/www/customers-microservice || exit
+            git reset --hard
+            git clean -fd
+            git pull origin main
+            chmod +x entrypoint.sh
+            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
+            docker-compose -f docker-compose.prod.yml ps
+          EOF
