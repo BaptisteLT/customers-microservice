@@ -27,15 +27,18 @@ RUN curl -sS https://getcomposer.org/installer | php \
     && chmod +x /usr/local/bin/composer
 
 # Create the php directory if it doesn't exist
-#RUN mkdir -p /usr/local/etc/php
+RUN mkdir -p /usr/local/etc/php
 
 
-#COPY php.ini /usr/local/etc/php/php.ini
+COPY php.ini /usr/local/etc/php/php.ini
+
+
+
 # Copy entrypoint script
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+# COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 # Set entrypoint
-ENTRYPOINT ["entrypoint.sh"]
+# ENTRYPOINT ["entrypoint.sh"]
 
 # Set the CMD to the default PHP-FPM command
-CMD ["php-fpm"]
+# CMD ["php-fpm"]

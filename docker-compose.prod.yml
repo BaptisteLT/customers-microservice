@@ -6,8 +6,8 @@ services:
     image: php:8.3-fpm
     container_name: php3
     volumes:
-      - ./customers-microservice:/var/www/customers-microservice
-      - ./php.ini:/usr/local/etc/php/php.ini 
+      - ./customers-microservice:/var/www/customers-microservice:rw
+      - ./php.ini:/usr/local/etc/php/php.ini:rw
     environment:
       - SYMFONY_ENV=prod
     expose:
@@ -34,8 +34,8 @@ services:
       - "80:80"   # expose nginx on port 80
       #- "443:443" # add if using HTTPS and certs
     volumes:
-      - ./customers-microservice:/var/www/customers-microservice
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./customers-microservice:/var/www/customers-microservice:rw
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:rw
     depends_on:
       - php3
     restart: unless-stopped
