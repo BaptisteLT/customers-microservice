@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB_CLONE }}
         run: |
-          ssh -o StrictHostKeyChecking=no root@185.170.214.106 "bash -s" <<EOF
+          ssh -o StrictHostKeyChecking=no root@185.170.214.106 << 'EOF'
             if [ ! -d "/var/www/customers-microservice/.git" ]; then
               git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www/customers-microservice
             fi
