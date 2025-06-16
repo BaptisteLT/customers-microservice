@@ -24,11 +24,16 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no root@185.170.214.106 << 'EOF'
             if [ ! -d "/var/www/customers-microservice/.git" ]; then
-              git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www/customers-microservice
+              git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www
             fi
 
-            cd /var/www/customers-microservice || exit
+            # Navigate to directory and pull updates
+            cd /var/www/customers-microservice || exit 1
+            echo "Pulling latest changes..."
             git pull origin main
+
+
+
             # Run production docker-compose
             docker-compose -f docker-compose.prod.yml down
             docker-compose -f docker-compose.prod.yml up -d --build
