@@ -19,16 +19,16 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to VPS
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB_CLONE }}
         run: |
-          ssh -o StrictHostKeyChecking=no root@185.170.214.106 "bash -s" <<EOF
+          ssh -o StrictHostKeyChecking=no root@185.170.214.106 << 'EOF'
+            # Clone the repo if it doesn't exist
             if [ ! -d "/var/www/customers-microservice/.git" ]; then
-              git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www
+              git clone https://BaptisteLT:${{ secrets.TOKEN_GITHUB_CLONE }}@github.com/BaptisteLT/customers-microservice.git /var/www/customers-microservice
             fi
 
             cd /var/www/customers-microservice || exit
-            git pull origin main
             ls
+            git pull origin main
             docker-compose -f docker-compose.prod.yml down
             docker-compose -f docker-compose.prod.yml up -d --build
+          EOF
