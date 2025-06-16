@@ -24,7 +24,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no root@185.170.214.106 << 'EOF'
             if [ ! -d "/var/www/customers-microservice/.git" ]; then
-              git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www
+              git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www/customers-microservice
             fi
 
             # Navigate to directory and pull updates
