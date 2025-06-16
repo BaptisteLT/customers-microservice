@@ -26,4 +26,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer \
     && chmod +x /usr/local/bin/composer
 
+# Create the php directory if it doesn't exist
+RUN mkdir -p /usr/local/etc/php
+
+
 COPY php.ini /usr/local/etc/php/php.ini
