@@ -24,10 +24,11 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no root@185.170.214.106 "bash -s" <<EOF
             if [ ! -d "/var/www/customers-microservice/.git" ]; then
-              git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www
+              git clone https://BaptisteLT:${GITHUB_TOKEN}@github.com/BaptisteLT/customers-microservice.git /var/www/customers-microservice
             fi
 
             cd /var/www/customers-microservice || exit
             git pull origin main
-            docker-compose down
-            docker-compose up -d --build
+            # Run production docker-compose
+            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml up -d --build
