@@ -27,6 +27,7 @@ jobs:
             fi
 
             cd /var/www/customers-microservice || exit
+            chmod +x entrypoint.sh
             ls
             # Stop and remove existing containers if they exist
             docker-compose -f docker-compose.prod.yml down || true
