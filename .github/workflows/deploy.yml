@@ -28,7 +28,13 @@ jobs:
 
             cd /var/www/customers-microservice || exit
             ls
+            # Stop and remove existing containers if they exist
+            docker-compose -f docker-compose.prod.yml down || true
+            
+            # Pull latest changes and rebuild
             git pull origin main
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml up -d --build
+            docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
+            
+            # Verify containers are running
+            docker-compose -f docker-compose.prod.yml ps
           EOF
