@@ -7,7 +7,7 @@ services:
     container_name: php3
     volumes:
       - ./customers-microservice:/var/www/customers-microservice:ro   # read-only mount for code
-      - ./php.ini:/usr/local/etc/php/php.ini:ro
+      - ./php.ini:/usr/local/etc/php/php.ini 
     environment:
       - SYMFONY_ENV=prod
     expose:
