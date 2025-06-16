@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  php3:
+    build: .
+    image: php:8.3-fpm
+    container_name: php3
+    volumes:
+      - ./customers-microservice:/var/www/html:ro   # read-only mount for code
+      - ./php.ini:/usr/local/etc/php/php.ini:ro
+    environment:
+      - SYMFONY_ENV=prod
+    expose:
+      - "9000"  # expose port internally, no need to map host port in prod
+    depends_on:
+      - mariadb3
+
+  mariadb3:
+    image: mariadb:latest
+    container_name: mariadb3
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symfony
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: unless-stopped
+
+  nginx3:
+    image: nginx:latest
+    container_name: nginx3
+    ports:
+      - "80:80"   # expose nginx on port 80
+      #- "443:443" # add if using HTTPS and certs
+    volumes:
+      - ./customers-microservice:/var/www/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php3
+    restart: unless-stopped
+
+volumes:
+  db_data:
