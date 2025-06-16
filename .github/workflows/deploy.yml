@@ -20,22 +20,15 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no root@185.170.214.106 << 'EOF'
-            # Clone the repo if it doesn't exist
-            if [ ! -d "/var/www/customers-microservice/.git" ]; then
-              git clone https://BaptisteLT:${{ secrets.TOKEN_GITHUB_CLONE }}@github.com/BaptisteLT/customers-microservice.git /var/www/customers-microservice
-            fi
+          ssh -o StrictHostKeyChecking=no root@185.170.214.106 << EOF
+          if [ ! -d "/var/www/customers-microservice/.git" ]; then
+            git clone git@github.com:BaptisteLT/customers-microservice.git /var/www/customers-microservice
+          fi
 
-            cd /var/www/customers-microservice || exit
-            chmod +x entrypoint.sh
-            ls
-            # Stop and remove existing containers if they exist
-            docker-compose -f docker-compose.prod.yml down || true
-            
-            # Pull latest changes and rebuild
-            git pull origin main
-            docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
-            
-            # Verify containers are running
-            docker-compose -f docker-compose.prod.yml ps
-          EOF
+          cd /var/www/customers-microservice || exit
+          git pull origin main
+          chmod +x entrypoint.sh
+          docker-compose -f docker-compose.prod.yml down
+          docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
+          docker-compose -f docker-compose.prod.yml ps
+        EOF
