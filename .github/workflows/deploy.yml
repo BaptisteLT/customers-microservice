@@ -40,13 +40,10 @@ jobs:
             #Installing composer dependencies
             docker exec php3 sh -c "cd /var/www/customers-microservice && composer install --no-dev --optimize-autoloader"
 
-            #Generate JWT Key Pair
-            if [ ! -f /var/www/customers-microservice/config/jwt/private.pem ] || [ ! -f /var/www/customers-microservice/config/jwt/public.pem ]; then
-              php bin/console lexik:jwt:generate-keypair
-            else
-              echo "JWT keys already exist, skipping generation."
-            fi
-            
+
+            # Generate JWT Key Pair inside the container
+            docker exec php3 sh -c "[ ! -f /var/www/customers-microservice/config/jwt/private.pem ] || [ ! -f /var/www/customers-microservice/config/jwt/public.pem ] && php bin/console lexik:jwt:generate-keypair || echo 'JWT keys already exist, skipping generation.'"
+
             #Changing ownership
             docker exec php3 chown -R www-data:www-data /var/www/customers-microservice/var/cache /var/www/customers-microservice/var/log
             #Change permissions
