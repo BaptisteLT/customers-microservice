@@ -40,9 +40,8 @@ jobs:
             #Installing composer dependencies
             docker exec php3 sh -c "cd /var/www/customers-microservice && composer install --no-dev --optimize-autoloader"
 
-            #Creating tables in DB
-            docker exec php3 sh -c "php bin/console doctrine:migrations:migrate --no-interaction"
-
+            # Creating tables in DB
+            docker exec php3 sh -c "cd /var/www/customers-microservice && php bin/console doctrine:migrations:migrate --no-interaction"
 
             # Generate JWT Key Pair inside the container
             docker exec php3 sh -c "[ ! -f /var/www/customers-microservice/config/jwt/private.pem ] || [ ! -f /var/www/customers-microservice/config/jwt/public.pem ] && php bin/console lexik:jwt:generate-keypair || echo 'JWT keys already exist, skipping generation.'"
