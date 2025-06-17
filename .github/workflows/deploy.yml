@@ -31,5 +31,10 @@ jobs:
             chmod +x entrypoint.sh
             docker-compose -f docker-compose.prod.yml down
             docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
+
+            #Installing composer dependencies
+            docker exec php3 sh -c "cd /var/www/customers-microservice && composer install --no-dev --optimize-autoloader"
+
+
             docker-compose -f docker-compose.prod.yml ps
           EOF
