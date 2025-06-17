@@ -40,7 +40,9 @@ jobs:
             #Installing composer dependencies
             docker exec php3 sh -c "cd /var/www/customers-microservice && composer install --no-dev --optimize-autoloader"
 
-            
+            #Generate JWT Key Pair
+            docker compose exec php3 php bin/console lexik:jwt:generate-keypair
+
 
             docker-compose -f docker-compose.prod.yml ps
           EOF
