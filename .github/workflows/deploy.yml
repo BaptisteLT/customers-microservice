@@ -43,6 +43,10 @@ jobs:
             #Generate JWT Key Pair
             docker exec php3 sh -c "cd /var/www/customers-microservice && php bin/console lexik:jwt:generate-keypair"
 
+            #Changing ownership
+            docker exec php3 chown -R www-data:www-data /var/www/customers-microservice/var/cache /var/www/customers-microservice/var/log
+            #Change permissions
+            docker exec php3 chmod -R 775 /var/www/customers-microservice/var/cache /var/www/customers-microservice/var/log
 
 
             docker-compose -f docker-compose.prod.yml ps
