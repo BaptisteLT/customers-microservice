@@ -30,14 +30,17 @@ jobs:
             git pull origin main
             chmod +x entrypoint.sh
             docker-compose -f docker-compose.prod.yml down
+
+            #Change to prod env
+            sed -i 's/^APP_ENV=.*/APP_ENV=prod/' /var/www/customers-microservice/customers-microservice/.env
+
+
             docker-compose -f docker-compose.prod.yml up -d --build --force-recreate
 
             #Installing composer dependencies
             docker exec php3 sh -c "cd /var/www/customers-microservice && composer install --no-dev --optimize-autoloader"
 
-            #Change to prod env
-            sed -i 's/^APP_ENV=.*/APP_ENV=prod/' /var/www/customers-microservice/customers-microservice/.env
-
+            
 
             docker-compose -f docker-compose.prod.yml ps
           EOF
