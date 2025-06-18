@@ -30,7 +30,7 @@ jobs:
 
       - name: Setup Cache
         run: |
-          ls -a
+          cd customers-microservice
           echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
       - name: Caching deps
