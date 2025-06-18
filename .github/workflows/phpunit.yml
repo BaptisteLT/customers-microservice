@@ -50,7 +50,7 @@ jobs:
         run: sudo systemctl start mysql
 
       - name: Fix permissions
-        run: chmod +x bin/console
+        run: ls -a && chmod +x bin/console
         working-directory: ./customers-microservice
 
       - name: Run PHPUnit tests with coverage
