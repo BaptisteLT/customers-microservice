@@ -22,7 +22,7 @@ services:
       MYSQL_USER: symfony
       MYSQL_PASSWORD: symfony
     ports:
-      - "3309:3306" # Le port local est maintenant 3309
+      - "3309:3306"
     volumes:
       - db_data:/var/lib/mysql
 
@@ -41,12 +41,22 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin3
     environment:
-      PMA_HOST: mariadb3 # Nom du conteneur MariaDB
-      PMA_PORT: 3306    # Port interne utilisé par phpMyAdmin
+      PMA_HOST: mariadb3
+      PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "8085:80" # Accès à phpMyAdmin via le port 8085
+      - "8085:80"
     depends_on:
       - mariadb3
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9091:9090"
+    restart: unless-stopped
+
 volumes:
   db_data:
