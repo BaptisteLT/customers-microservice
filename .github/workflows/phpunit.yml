@@ -29,8 +29,10 @@ jobs:
           tools: composer:v2
 
       - name: Setup Cache
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
-        
+        run: |
+          cd customers-microservice
+          echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+
       - name: Caching deps
         uses: actions/cache@v4
         with:
@@ -43,14 +45,14 @@ jobs:
         run: composer self-update
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+        run: ls -a && composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
         working-directory: ./customers-microservice
 
       - name: Prepare the database
         run: sudo systemctl start mysql
 
       - name: Fix permissions
-        run: chmod +x bin/console
+        run: ls -a && chmod +x bin/console
         working-directory: ./customers-microservice
 
       - name: Run PHPUnit tests with coverage
