@@ -12,11 +12,64 @@ class CustomerValidationTest extends KernelTestCase
 
     protected function setUp(): void
     {
-        $kernel = self::bootKernel();
+        self::bootKernel();
+        $this->entityManager = static::getContainer()->get('doctrine')->getManager();
+        $this->entityManager->beginTransaction();
+    }
 
-        $this->entityManager = $kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
+    public function testValidCustomer(): void
+    {
+        self::bootKernel();
+        $validator = static::getContainer()->get(ValidatorInterface::class);
+
+        $customer = new Customer();
+        $customer->setUsername('valid_user');
+        $customer->setFirstName('Alice');
+        $customer->setLastName('Durand');
+        $customer->setCreatedAt(new \DateTimeImmutable());
+
+        $violations = $validator->validate($customer);
+        $this->assertCount(0, $violations, "Customer valide ne devrait générer aucune violation");
+    }
+
+    public function testMissingUsername(): void
+    {
+        self::bootKernel();
+        $validator = static::getContainer()->get(ValidatorInterface::class);
+
+        $customer = new Customer();
+        $customer->setFirstName('Alice');
+        $customer->setLastName('Durand');
+        $customer->setCreatedAt(new \DateTimeImmutable());
+
+        $violations = $validator->validate($customer);
+        $this->assertGreaterThanOrEqual(1, count($violations));
+    }
+
+    public function testInvalidEmailFormat(): void
+    {
+        self::bootKernel();
+        $validator = static::getContainer()->get(ValidatorInterface::class);
+
+        $customer = new Customer();
+        $customer->setUsername('bad_email_user');
+        $customer->setFirstName('Jean');
+        $customer->setLastName('Dubois');
+        $customer->setEmail('not-an-email');
+        $customer->setCreatedAt(new \DateTimeImmutable());
+
+        $violations = $validator->validate($customer);
+        $this->assertGreaterThanOrEqual(1, count($violations));
+    }
+
+    public function testCreatedAtIsValid(): void
+    {
+        $customer = new Customer();
+        $now = new \DateTimeImmutable();
+        $customer->setCreatedAt($now);
+
+        $this->assertInstanceOf(\DateTimeImmutable::class, $customer->getCreatedAt());
+        $this->assertEquals($now, $customer->getCreatedAt());
     }
 
     public function testUsernameUniqueness()
@@ -52,10 +105,9 @@ class CustomerValidationTest extends KernelTestCase
 
     protected function tearDown(): void
     {
-        parent::tearDown();
-
-        // Fermer l'EntityManager pour éviter les fuites de mémoire
+        $this->entityManager->rollback(); // Pas de flush final, donc rien de vraiment écrit
         $this->entityManager->close();
         $this->entityManager = null;
+        parent::tearDown();
     }
 }
