@@ -30,7 +30,7 @@ Lancer les tests unitaires, fonctionnels, etc: php ./vendor/bin/phpunit
 
 
 Le covering est mis avec place avec PHPUnit et les commandes: run: vendor/bin/phpunit --coverage-clover clover.xml
-puis ./vendor/bin/coverage-check clover.xml 95
+puis ./vendor/bin/coverage-check clover.xml 95 
 dans phpunit.yml (github actions)
 La branche main est protégée dans le cas d'un pull request ayant un coverage de -95%
 
