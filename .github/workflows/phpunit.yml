@@ -29,8 +29,10 @@ jobs:
           tools: composer:v2
 
       - name: Setup Cache
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
-        
+        run: |
+          ls -a
+          echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+
       - name: Caching deps
         uses: actions/cache@v4
         with:
