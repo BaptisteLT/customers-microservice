@@ -30,6 +30,13 @@
         </include>
     </source>
 
+    <coverage>
+        <report>
+            <clover outputFile="cov.xml"/>
+            <!-- Add other report formats if needed -->
+        </report>
+    </coverage>
+
     <extensions>
         <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>

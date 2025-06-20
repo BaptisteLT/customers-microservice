@@ -29,8 +29,10 @@ Accéder à la documentation: /api
 Lancer les tests unitaires, fonctionnels, etc: php ./vendor/bin/phpunit
 
 
-Le covering est mis avec place avec PHPUnit et les commandes: run: vendor/bin/phpunit --coverage-clover clover.xml
-puis ./vendor/bin/coverage-check clover.xml 95 
+Le covering est mis avec place avec PHPUnit et les commandes: run: $env:XDEBUG_MODE="coverage"; vendor\bin\phpunit --coverage-clover cov.xml --coverage-html coverage
+
+puis ./vendor/bin/coverage-check cov.xml 95 (ou voir dans le dossier coverage et ouvrir [View Customers Coverage Report](./customers-microservice/coverage/index.html){:target="_blank"}
+)
 dans phpunit.yml (github actions)
 La branche main est protégée dans le cas d'un pull request ayant un coverage de -95%
 

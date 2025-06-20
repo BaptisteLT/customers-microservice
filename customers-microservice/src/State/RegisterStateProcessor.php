@@ -32,7 +32,6 @@ class RegisterStateProcessor implements ProcessorInterface
             throw new ConflictHttpException(sprintf('Username "%s" existe déjà.', $data->getUsername()));
         }
 
-
         //We check if the paswword is set and if it is, we hash it to the DB
         if ($data->getPlainPassword()) {
             $hashedPassword = $this->passwordHasher->hashPassword($data, $data->getPlainPassword());
