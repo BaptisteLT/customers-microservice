@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install -j$(nproc) pdo_mysql opcache zip
 
+# Install redis for Grafana
+RUN pecl install redis || true && docker-php-ext-enable redis
+
 
 # Conditionally install and enable AMQP if not already installed
 RUN if ! php -m | grep -q '^amqp$'; then \

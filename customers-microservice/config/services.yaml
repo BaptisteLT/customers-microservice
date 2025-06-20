@@ -29,3 +29,13 @@ services:
             - '@App\Repository\CustomerRepository'
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
+    Prometheus\CollectorRegistry: '@prometheus_metrics_bundle.collector_registry'
+
+    App\EventListener\JwtAuthSuccessListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.authentication_success, method: onAuthenticationSuccess }
+
+    App\EventListener\JwtAuthFailureListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.authentication_failure, method: onAuthenticationFailure }

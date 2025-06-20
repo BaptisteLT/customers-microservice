@@ -12,7 +12,14 @@ services:
       - "9003:9000"
     depends_on:
       - mariadb3
+      - redis
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+      
   mariadb3:
     image: mariadb:latest
     container_name: mariadb3
@@ -22,7 +29,7 @@ services:
       MYSQL_USER: symfony
       MYSQL_PASSWORD: symfony
     ports:
-      - "3309:3306" # Le port local est maintenant 3309
+      - "3309:3306"
     volumes:
       - db_data:/var/lib/mysql
 
@@ -36,17 +43,37 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php3
-      
+
   phpmyadmin3:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin3
     environment:
-      PMA_HOST: mariadb3 # Nom du conteneur MariaDB
-      PMA_PORT: 3306    # Port interne utilisé par phpMyAdmin
+      PMA_HOST: mariadb3
+      PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "8085:80" # Accès à phpMyAdmin via le port 8085
+      - "8085:80"
     depends_on:
       - mariadb3
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9091:9090"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
 volumes:
   db_data:
+  grafana_data:

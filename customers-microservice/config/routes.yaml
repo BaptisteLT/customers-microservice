@@ -7,3 +7,7 @@ controllers:
 auth:
   path: /auth
   methods: ['POST']
+
+prometheus_metrics:
+    path: /metrics
+    controller: Artprima\PrometheusMetricsBundle\Controller\MetricsController::metricsAction
