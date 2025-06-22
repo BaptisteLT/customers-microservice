@@ -55,6 +55,11 @@ jobs:
         run: ls -a && chmod +x bin/console
         working-directory: ./customers-microservice
 
+      - name: Generate JWT keypair
+        run: php bin/console lexik:jwt:generate-keypair --overwrite
+        working-directory: ./customers-microservice
+
+
       - name: Create database schema
         run: php bin/console doctrine:database:create --env=test || true
         working-directory: ./customers-microservice
