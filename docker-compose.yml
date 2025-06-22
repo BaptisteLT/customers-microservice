@@ -25,6 +25,7 @@ services:
       - "3309:3306" # Le port local est maintenant 3309
     volumes:
       - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   nginx3:
     image: nginx:latest

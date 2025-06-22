@@ -28,9 +28,22 @@
         <include>
             <directory>src</directory>
         </include>
+
+        <exclude>
+            <directory>src/DataFixtures</directory>
+        </exclude>
     </source>
 
+    <coverage>
+        <report>
+            <clover outputFile="cov.xml"/>
+            <!-- Add other report formats if needed -->
+        </report>
+    </coverage>
+
     <extensions>
+
         <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>
+
 </phpunit>

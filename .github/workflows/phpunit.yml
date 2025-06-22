@@ -12,7 +12,7 @@ jobs:
         env:
           MARIADB_USER: root
           MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: app_test
+          MARIADB_DATABASE: symfony_test
           MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'no'
         ports:
           - 3306/tcp
@@ -55,13 +55,32 @@ jobs:
         run: ls -a && chmod +x bin/console
         working-directory: ./customers-microservice
 
-      - name: Run PHPUnit tests with coverage
-        run: vendor/bin/phpunit --coverage-clover clover.xml
+      - name: Generate JWT keypair
+        run: php bin/console lexik:jwt:generate-keypair --overwrite
+        working-directory: ./customers-microservice
+
+
+      - name: Create database schema
+        run: php bin/console doctrine:database:create --env=test || true
         working-directory: ./customers-microservice
         env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/symfony_test
           APP_ENV: test
-          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/app_test
+
+      - name: Update schema
+        run: php bin/console doctrine:migrations:migrate --env=test
+        working-directory: ./customers-microservice
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/symfony_test
+          APP_ENV: test
+
+      - name: Run PHPUnit tests with coverage
+        run: vendor/bin/phpunit --coverage-clover cov.xml
+        working-directory: ./customers-microservice
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/symfony_test
+          APP_ENV: test
 
       - name: Enforce minimum code coverage
-        run: ./vendor/bin/coverage-check clover.xml 95
+        run: ./vendor/bin/coverage-check cov.xml 95
         working-directory: ./customers-microservice
