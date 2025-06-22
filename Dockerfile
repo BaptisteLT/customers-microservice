@@ -7,7 +7,9 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     librabbitmq-dev \
     libzip-dev \
-    zip unzip git
+    zip unzip git \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
 RUN docker-php-ext-install -j$(nproc) pdo_mysql opcache zip
 

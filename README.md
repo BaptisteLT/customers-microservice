@@ -31,6 +31,9 @@ Lancer les tests unitaires, fonctionnels, etc: php ./vendor/bin/phpunit
 
 Le covering est mis avec place avec PHPUnit et les commandes: run: $env:XDEBUG_MODE="coverage"; vendor\bin\phpunit --coverage-clover cov.xml --coverage-html coverage
 
+(ou dans le conteneur docker exec -it php3 bash PUIS docker XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-html coverage --coverage-clover cov.xml
+)
+
 puis ./vendor/bin/coverage-check cov.xml 95 (ou voir dans le dossier coverage et ouvrir [View Customers Coverage Report](./customers-microservice/coverage/index.html){:target="_blank"}
 )
 dans phpunit.yml (github actions)

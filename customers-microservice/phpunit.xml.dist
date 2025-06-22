@@ -28,6 +28,10 @@
         <include>
             <directory>src</directory>
         </include>
+
+        <exclude>
+            <directory>src/DataFixtures</directory>
+        </exclude>
     </source>
 
     <coverage>
@@ -38,6 +42,8 @@
     </coverage>
 
     <extensions>
+
         <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>
+
 </phpunit>
