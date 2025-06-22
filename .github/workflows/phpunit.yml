@@ -58,15 +58,22 @@ jobs:
       - name: Create database schema
         run: php bin/console doctrine:database:create --env=test || true
         working-directory: ./customers-microservice
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/symfony_test
+          APP_ENV: test
 
       - name: Update schema
         run: php bin/console doctrine:migrations:migrate --env=test
         working-directory: ./customers-microservice
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/symfony_test
+          APP_ENV: test
 
       - name: Run PHPUnit tests with coverage
         run: vendor/bin/phpunit --coverage-clover cov.xml
         working-directory: ./customers-microservice
         env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:${{ job.services.database.ports['3306'] }}/symfony_test
           APP_ENV: test
 
       - name: Enforce minimum code coverage
