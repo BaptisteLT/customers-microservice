@@ -54,7 +54,6 @@ abstract class AbstractTest extends ApiTestCase
         $entityManager->flush();
 
 
-
         $response = $this->client->request('POST', '/auth', ['json' => $body ?: [
             'username' => 'admin@example.com',
             'password' => '$3cr3t',
